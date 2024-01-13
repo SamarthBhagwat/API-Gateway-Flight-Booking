@@ -1,4 +1,6 @@
-const { UserRepository } = require('../repositories/')
+const { UserRepository } = require('../repositories/');
+const { AppError } = require('../utils/error');
+const { StatusCodes } = require('http-status-codes');
 
 const userRepository = new UserRepository();
 
