@@ -12,24 +12,39 @@ const userService = new UserService();
 
 class UserController{
 
-    async create(req, res) {
+    async signup(req, res) {
         const userData = req.body;
         try {
             const email = userData.email;
             const password = userData.password;
-            const user = await userService.create({
+            const user = await userService.signup({
                 'email': email,
                 'password': password
             });
             SuccessResponse.data = user;
             res.status(StatusCodes.CREATED).send(SuccessResponse);
         } catch (error) {
-            console.log('Error in controller' , error);
             ErrorResponse.error = error;
             res.status(error.statusCode).send(ErrorResponse);
         }
     }
     
+    async signin(req, res){
+        const userData = req.body;
+        try {
+            const email = userData.email;
+            const password = userData.password;
+            const jwtToken = await userService.signin({
+                email: email,
+                password: password
+            });
+            SuccessResponse.data = jwtToken;
+            res.status(StatusCodes.OK).send(SuccessResponse); 
+        } catch (error) {
+            ErrorResponse.error = error;
+            res.status(error.statusCode).send(ErrorResponse);
+        }
+    }
 }
 
 
