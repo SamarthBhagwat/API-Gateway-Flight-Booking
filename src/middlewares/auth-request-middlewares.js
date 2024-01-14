@@ -1,6 +1,9 @@
 const {AppError} = require('../utils/error');
 const {StatusCodes} = require('http-status-codes');
 const {ErrorResponse} = require('../utils/response');
+const { UserService } = require('../services');
+
+const userService = new UserService();
 
 class AuthMiddleware{
     
@@ -22,6 +25,20 @@ class AuthMiddleware{
         }
     
         next();
+    }
+
+    async checkAuth(req, res, next){
+        try {
+            const isAuthenticated = await userService.isAuthenticated(req.headers['x-access-token']);
+            if(isAuthenticated){
+                req.user = isAuthenticated; // setting the user id in the request object
+                next();
+            }    
+        } catch (error) {
+            ErrorResponse.error = error;
+            return res.status(error.statusCode).send(ErrorResponse);
+        }
+    
     }
 }
 

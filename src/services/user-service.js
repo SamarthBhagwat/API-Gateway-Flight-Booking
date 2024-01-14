@@ -61,6 +61,31 @@ class UserService{
         }
     }
 
+
+    async isAuthenticated(jwtToken){
+        try {
+            if(!jwtToken){
+                throw new AppError("Missing JWT Token", StatusCodes.BAD_REQUEST);
+            }
+
+            const response = AuthUtility.verifyJWTToken(jwtToken);
+            // Extra step, can be skipped but it is good for verification
+            // Verify whether user present in db
+            const user = await userRepository.findByPk(response.id);
+            if(!user){
+                throw new AppError("No user found", StatusCodes.UNAUTHORIZED);
+            }
+
+            return user.id;
+
+        } catch (error) {
+            if(error.name == 'JsonWebTokenError'){
+                throw new AppError('Invalid JWT Token', StatusCodes.UNAUTHORIZED);
+            }
+            console.log(error);
+            throw error;
+        }
+    }
 }
 
 module.exports = UserService;
