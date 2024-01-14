@@ -82,6 +82,9 @@ class UserService{
             if(error.name == 'JsonWebTokenError'){
                 throw new AppError('Invalid JWT Token', StatusCodes.UNAUTHORIZED);
             }
+            else if(error.name == 'TokenExpiredError'){
+                throw new AppError('JWT token has expired', StatusCodes.UNAUTHORIZED);
+            }
             console.log(error);
             throw error;
         }
