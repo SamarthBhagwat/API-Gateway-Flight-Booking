@@ -40,6 +40,14 @@ class AuthMiddleware{
         }
     
     }
+
+    async isAdmin(req, res, next){
+        const response = await userService.isAdmin(req.user);
+        if(!response){
+            return res.status(StatusCodes.UNAUTHORIZED).send({message: 'User not authorized for this action'});
+        }
+        next();
+    }
 }
 
 

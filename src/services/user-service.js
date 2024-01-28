@@ -93,6 +93,43 @@ class UserService{
             throw error;
         }
     }
+
+    async addRoleToUser(data){
+        try {
+            const user = await userRepository.findByPk(data.id);
+            if(!user){
+                throw new AppError("No user found for given id", StatusCodes.NOT_FOUND);
+            }
+            const role = await roleRepository.getRoleByName(data.role);
+            if(!role){
+                throw new AppError('No role found with the given name', StatusCodes.NOT_FOUND);
+            }
+            user.addRole(role); 
+            return user;
+        } catch (error) {
+            if(error instanceof AppError) throw error;
+            console.log(error);
+            throw new AppError('Something went wrong', StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async isAdmin(id){
+        try {
+            const user = await userRepository.findByPk(id);
+            if(!user){
+                throw new AppError("No user found for given id", StatusCodes.NOT_FOUND);
+            }
+            const adminrole = await roleRepository.getRoleByName(USER_ROLES_ENUMS.ADMIN);
+            if(!adminrole){
+                throw new AppError('No role found with the given name', StatusCodes.NOT_FOUND);
+            }
+            return user.hasRole(adminrole);
+        } catch (error) {
+            if(error instanceof AppError) throw error;
+            console.log(error);
+            throw new AppError('Something went wrong', StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 
 module.exports = UserService;

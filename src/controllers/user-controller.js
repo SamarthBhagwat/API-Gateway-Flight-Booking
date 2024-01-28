@@ -45,6 +45,23 @@ class UserController{
             res.status(error.statusCode).send(ErrorResponse);
         }
     }
+
+    async addRoleToUser(req, res){ 
+        const userData = req.body;
+        try {
+            const role = userData.role;
+            const id = userData.id;
+            const jwtToken = await userService.addRoleToUser({
+                role: role,
+                id: id
+            });
+            SuccessResponse.data = jwtToken;
+            res.status(StatusCodes.OK).send(SuccessResponse); 
+        } catch (error) {
+            ErrorResponse.error = error;
+            res.status(error.statusCode).send(ErrorResponse);
+        }
+    }
 }
 
 
